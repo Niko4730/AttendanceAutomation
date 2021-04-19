@@ -10,6 +10,10 @@ import GUI.Dashboard.Interfaces.ISubPage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 
 import java.sql.SQLException;
@@ -18,9 +22,15 @@ import java.util.List;
 
 public class Controller implements ISubPage {
 
-    private Course selectedCourse;
+    @FXML
+    private CategoryAxis xAxisDays;
+    @FXML
+    private NumberAxis yAxisDays;
+    @FXML
+    private BarChart<?, ?> barChartDays;
     @FXML
     private ComboBox<Course> courseSelector;
+    private Course selectedCourse;
     private Account currentAccount;
     private AccountBLL accountBLL;
     private SchemaBLL schemaBLL;
@@ -77,6 +87,13 @@ public class Controller implements ISubPage {
             selectedCourse = newValue;
             update();
         });
+
+        xAxisDays.setLabel("Dage");
+
+        yAxisDays.setLabel("Fravær");
+        yAxisDays.setAutoRanging(false);
+        yAxisDays.setLowerBound(0.0);
+        yAxisDays.setUpperBound(100.0);
     }
 
     public void update() {
@@ -91,5 +108,22 @@ public class Controller implements ISubPage {
                 e.printStackTrace();
             }
         }
+
+        XYChart.Series daysBarChart = new XYChart.Series();
+        int i = 1;
+        for (double absence : attendanceBLL.getAllDaysAbsence(observableAccounts, selectedCourse, observableLessons)){
+            String name;
+            switch(i) {
+                case 1 -> name = "Mandag";
+                case 2 -> name = "Tirsdag";
+                case 3 -> name = "Onsdag";
+                case 4 -> name = "Torsdag";
+                case 5 -> name = "Fredag";
+                default -> name = "?";
+            }
+            daysBarChart.getData().add(new XYChart.Data(name, absence));
+            i++;
+        } barChartDays.getData().setAll(daysBarChart);
     }
+
 }
