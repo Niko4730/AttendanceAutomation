@@ -40,6 +40,8 @@ public class Controller implements ISubPage {
     private ObservableList<Lesson> periodLessons;
     private ObservableList<Attendance> periodAttendance;
 
+
+
     @FXML
     private ComboBox<Course> courseSelector;
     @FXML

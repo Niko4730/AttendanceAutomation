@@ -10,10 +10,7 @@ import GUI.Dashboard.Interfaces.ISubPage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.ComboBox;
 
 import java.sql.SQLException;
@@ -22,14 +19,7 @@ import java.util.List;
 
 public class Controller implements ISubPage {
 
-    @FXML
-    private CategoryAxis xAxisDays;
-    @FXML
-    private NumberAxis yAxisDays;
-    @FXML
-    private BarChart<?, ?> barChartDays;
-    @FXML
-    private ComboBox<Course> courseSelector;
+
     private Course selectedCourse;
     private Account currentAccount;
     private AccountBLL accountBLL;
@@ -40,6 +30,17 @@ public class Controller implements ISubPage {
     private ObservableList<Course> observableCourses;
     private ObservableList<Account> observableAccounts;
     private ObservableList<Lesson> observableLessons;
+
+    @FXML
+    private PieChart pieChartTotalAbs;
+    @FXML
+    private ComboBox<Course> courseSelector;
+    @FXML
+    private CategoryAxis xAxisdays;
+    @FXML
+    private NumberAxis yAxisdays;
+    @FXML
+    private BarChart<?,?> barChartDays;
 
     @Override
     public void setCurrentAccount(Account a) {
@@ -88,12 +89,13 @@ public class Controller implements ISubPage {
             update();
         });
 
-        xAxisDays.setLabel("Dage");
+        xAxisdays.setLabel("Dage");
 
-        yAxisDays.setLabel("Fravær");
-        yAxisDays.setAutoRanging(false);
-        yAxisDays.setLowerBound(0.0);
-        yAxisDays.setUpperBound(100.0);
+        yAxisdays.setLabel("Fravær");
+        yAxisdays.setAutoRanging(false);
+        yAxisdays.setLowerBound(0);
+        yAxisdays.setUpperBound(100);
+
     }
 
     public void update() {
@@ -107,23 +109,44 @@ public class Controller implements ISubPage {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
 
-        XYChart.Series daysBarChart = new XYChart.Series();
-        int i = 1;
-        for (double absence : attendanceBLL.getAllDaysAbsence(observableAccounts, selectedCourse, observableLessons)){
-            String name;
-            switch(i) {
-                case 1 -> name = "Mandag";
-                case 2 -> name = "Tirsdag";
-                case 3 -> name = "Onsdag";
-                case 4 -> name = "Torsdag";
-                case 5 -> name = "Fredag";
-                default -> name = "?";
+            XYChart.Series ds = new XYChart.Series();
+            int i = 1;
+
+            for (double absence : attendanceBLL.getAllDaysAbsence(observableAccounts,selectedCourse,observableLessons)) {
+                String name;
+                switch (i) {
+                    case 1 -> name = "Mandag";
+                    case 2 -> name = "Tirsdag";
+                    case 3 -> name = "Onsdag";
+                    case 4 -> name = "Torsdag";
+                    case 5 -> name = "Fredag";
+                    default -> name = " what is this";
+                }
+                ds.getData().add(new XYChart.Data(name, absence));
+                i++;
             }
-            daysBarChart.getData().add(new XYChart.Data(name, absence));
-            i++;
-        } barChartDays.getData().setAll(daysBarChart);
-    }
+            barChartDays.getData().setAll(ds);
 
+            double totalAtt = attendanceBLL.getAllCourseAttendances(observableAccounts,selectedCourse,observableLessons);
+            double totalAbs = 100 - totalAtt;
+            ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+
+                    new PieChart.Data("Fravær ("+totalAbs+"%)",totalAbs),
+                    new PieChart.Data("Tilstedeværelse ("+totalAtt+"%)",totalAtt)
+
+            );
+            // create piechart objct
+            PieChart pieChart = new PieChart(pieChartData);
+            pieChart.setTitle("Total Frævær for alle elever");
+            pieChart.setClockwise(true);
+            pieChart.setLabelLineLength(50);
+            pieChart.setLabelsVisible(true);
+            pieChart.setStartAngle(180);
+
+            pieChartTotalAbs.getData().setAll(pieChartData);
+
+
+        }
+    }
 }
