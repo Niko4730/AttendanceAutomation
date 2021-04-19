@@ -159,7 +159,7 @@ public class Controller implements ISubPage {
                 setItemsInSchema();
                 UserAlert.showAlert("Registreret!","Din registrering blev gemt!", Alert.AlertType.CONFIRMATION);
             } catch (SQLException e) {
-                UserAlert.showAlert("Der opstod en fejl!", e.getMessage(), Alert.AlertType.ERROR);
+                UserAlert.showDatabaseError();
             }
         }
     }

@@ -70,6 +70,29 @@ public class AttendanceBLL {
         return returnList;
     }
 
+    public double getAllCourseAttendances(List<Account> a, Course c, List<Lesson> lessons) {
+        double totalLessons = 0;
+        double totalAttended = 0;
+
+        for(Account acc : a) {
+            for (Lesson l : lessons) {
+                if (c.getId() != -1) {
+                    if (l.getCourseName().equals(c.getName())) {
+                        totalLessons++;
+                        if (hasAttended(acc, l))
+                            totalAttended++;
+                    }
+                } else {
+                    totalLessons++;
+                    if (hasAttended(acc, l))
+                        totalAttended++;
+                }
+            }
+        }
+
+        return (totalAttended / totalLessons) * 100;
+    }
+
     public double getCourseAttendance(Account a, Course c, List<Lesson> lessons, List<Attendance> attendances) {
         double totalLessons = 0;
         double totalAttended = 0;
@@ -89,6 +112,37 @@ public class AttendanceBLL {
         }
 
         return (totalAttended / totalLessons) * 100;
+    }
+
+    public double[] getAllDaysAbsence(List<Account> a, Course c, List<Lesson> lessons) {
+        double[] totalLessons = {0,0,0,0,0};
+        double[] totalAttended = {0,0,0,0,0};
+
+        for(Account acc : a) {
+            for(Lesson l : lessons) {
+                int weekIndex = l.getStartTime().toLocalDateTime().toLocalDate().getDayOfWeek().getValue() - 1;
+                if(c.getId() != -1) {
+                    if(l.getCourseName().equals(c.getName())) {
+                        totalLessons[weekIndex]++;
+                        if(hasAttended(acc,l))
+                            totalAttended[weekIndex]++;
+                    }
+                } else {
+                    totalLessons[weekIndex]++;
+                    if(hasAttended(acc,l))
+                        totalAttended[weekIndex]++;
+                }
+            }
+        }
+
+        double[] absence = new double[5];
+        for(int i = 0; i < totalLessons.length; i++) {
+            double att = (totalAttended[i] / totalLessons[i]) * 100;
+            att = Double.isNaN(att) ? 0 : att;
+            absence[i] = 100 - att;
+        }
+
+        return absence;
     }
 
     public double[] getDaysAbsence(Account a, Course c, List<Lesson> lessons, List<Attendance> attendances) {
@@ -171,58 +225,5 @@ public class AttendanceBLL {
 
     public List<Account> getAccountsFromCourse(Course c) throws SQLException {
         return dbAccess.getAccountsFromCourse(c);
-    }
-
-    public double[] getAllDaysAbsence(List<Account> a, Course c, List<Lesson> lessons) {
-        double[] totalLessons = {0,0,0,0,0};
-        double[] totalAttended = {0,0,0,0,0};
-
-        for(Account acc : a) {
-            for(Lesson l : lessons) {
-                int weekIndex = l.getStartTime().toLocalDateTime().toLocalDate().getDayOfWeek().getValue() - 1;
-                if(c.getId() != -1) {
-                    if(l.getCourseName().equals(c.getName())) {
-                        totalLessons[weekIndex]++;
-                        if(hasAttended(acc,l))
-                            totalAttended[weekIndex]++;
-                    }
-                } else {
-                    totalLessons[weekIndex]++;
-                    if(hasAttended(acc,l))
-                        totalAttended[weekIndex]++;
-                }
-            }
-        }
-
-        double[] absence = new double[5];
-        for(int i = 0; i < totalLessons.length; i++) {
-            double att = (totalAttended[i] / totalLessons[i]) * 100;
-            att = Double.isNaN(att) ? 0 : att;
-            absence[i] = 100 - att;
-        }
-
-        return absence;
-    }
-    public double getAllCourseAttendances(List<Account> a, Course c, List<Lesson> lessons) {
-        double totalLessons = 0;
-        double totalAttended = 0;
-
-        for(Account acc : a) {
-            for (Lesson l : lessons) {
-                if (c.getId() != -1) {
-                    if (l.getCourseName().equals(c.getName())) {
-                        totalLessons++;
-                        if (hasAttended(acc, l))
-                            totalAttended++;
-                    }
-                } else {
-                    totalLessons++;
-                    if (hasAttended(acc, l))
-                        totalAttended++;
-                }
-            }
-        }
-
-        return (totalAttended / totalLessons) * 100;
     }
 }

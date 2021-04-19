@@ -1,11 +1,13 @@
 package DAL;
 
 import BE.Account;
+import BE.Course;
 import BE.UserType;
 import DAL.Server.MSSQLHandler;
 
 import javax.xml.transform.Result;
 import java.sql.*;
+import java.util.List;
 
 public class AccountDAL {
     private Connection conn;
@@ -67,7 +69,7 @@ public class AccountDAL {
     }
 
     public int saveNewAccount(Account a) throws SQLException {
-        String query = "INSERT INTO Accounts ('username','password','type') VALUES (?,?,?)";
+        String query = "INSERT INTO Accounts (username,password,type) VALUES (?,?,?)";
         PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         ps.setString(1,a.getUsername());
         ps.setString(2,a.getPassword());
@@ -83,15 +85,15 @@ public class AccountDAL {
         if(rs.next()) {
             int newId = rs.getInt(1);
 
-            String query2 = "INSERT INTO UserInfo ('accountId','firstName','lastName','email','phone') VALUES (?,?,?,?,?)";
+            String query2 = "INSERT INTO UserInfo (accountId,firstName,lastName,email,phone) VALUES (?,?,?,?,?)";
             PreparedStatement ps2 = conn.prepareStatement(query2);
-            ps.setInt(1,newId);
-            ps.setString(2,a.getFirstName());
-            ps.setString(3,a.getLastName());
-            ps.setString(4,a.getEmail());
-            ps.setInt(5,a.getPhone());
+            ps2.setInt(1,newId);
+            ps2.setString(2,a.getFirstName());
+            ps2.setString(3,a.getLastName());
+            ps2.setString(4,a.getEmail());
+            ps2.setInt(5,a.getPhone());
 
-            int rows2 = ps.executeUpdate();
+            int rows2 = ps2.executeUpdate();
 
             if(rows2 == 0)
                 return -1;
@@ -118,5 +120,15 @@ public class AccountDAL {
 
         ps1.executeUpdate();
         ps2.executeUpdate();
+    }
+
+    public void addUserCourses(Account a, List<Course> coursesToAdd) throws SQLException {
+        for(Course c : coursesToAdd) {
+            String query = "INSERT INTO UserCourses (accountId,courseId) VALUES(?,?);";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1,a.getId());
+            ps.setInt(2,c.getId());
+            ps.executeUpdate();
+        }
     }
 }

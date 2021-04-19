@@ -78,7 +78,7 @@ public class Controller implements ISubPage {
         try {
             teacherCourses = schemaBLL.getUserCourses(currentAccount);
         } catch(SQLException e) {
-            UserAlert.showAlert("Der gik noget galt!","Der opstod desværre en fejl... Prøv igen!", Alert.AlertType.ERROR);
+            UserAlert.showDatabaseError();
         }
 
         dateFromSelector.setValue(LocalDate.now().with(TemporalAdjusters.firstDayOfYear()));

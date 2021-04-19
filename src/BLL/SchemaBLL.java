@@ -110,6 +110,10 @@ public class SchemaBLL {
         return dbAccess.getUserCourses(a);
     }
 
+    public List<Course> getAllCourses() throws SQLException {
+        return dbAccess.getAllCourses();
+    }
+
     public List<Lesson> getLessonsInterval(LocalDate from, LocalDate to, Course course) {
         List<Lesson> returnList = new ArrayList<>();
         for(Lesson lesson : allLessons) {

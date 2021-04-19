@@ -18,6 +18,11 @@ public class AccountBLL {
         dbAccess = new AccountDAL();
     }
 
+    public boolean usernameExists(String username) throws SQLException {
+        Account check = dbAccess.getAccountByUsername(username);
+        return check != null;
+    }
+
     public Account checkLogin(String username, String password) throws SQLException {
         if(!username.isEmpty() && !password.isEmpty()) {
             Account check = dbAccess.getAccountByUsername(username);
@@ -46,5 +51,9 @@ public class AccountBLL {
 
     public Account getAccountFromId(int id) throws SQLException {
         return dbAccess.getAccountById(id);
+    }
+
+    public void addUserCourses(Account a, List<Course> coursesToAdd) throws SQLException {
+        dbAccess.addUserCourses(a, coursesToAdd);
     }
 }

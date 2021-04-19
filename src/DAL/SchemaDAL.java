@@ -75,4 +75,17 @@ public class SchemaDAL {
 
         return returnList;
     }
+
+    public List<Course> getAllCourses() throws SQLException {
+        String query = "SELECT * FROM Courses;";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+
+        List<Course> returnList = new ArrayList<>();
+        while(rs.next()) {
+            returnList.add(new Course(rs.getInt("id"),rs.getString("courseName")));
+        }
+
+        return returnList;
+    }
 }

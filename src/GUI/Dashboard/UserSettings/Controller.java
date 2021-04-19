@@ -98,7 +98,7 @@ public class Controller implements ISubPage {
             UserAlert.showAlert("Sådan!","Dine indstillinger blev gemt!", Alert.AlertType.CONFIRMATION);
             load();
         } catch(SQLException e) {
-            e.printStackTrace();
+            UserAlert.showDatabaseError();
         }
     }
 

@@ -10,4 +10,8 @@ public class UserAlert {
         a.setContentText(text);
         a.showAndWait();
     }
+
+    public static void showDatabaseError() {
+        showAlert("Åh nej!","Der opstod en fejl under forbindelse til databasen. Prøv igen senere!", Alert.AlertType.ERROR);
+    }
 }

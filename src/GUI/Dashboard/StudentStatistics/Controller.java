@@ -8,6 +8,7 @@ import BLL.AccountBLL;
 import BLL.AttendanceBLL;
 import BLL.SchemaBLL;
 import GUI.Dashboard.Interfaces.ISubPage;
+import UTIL.UserAlert;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -84,7 +85,7 @@ public class Controller implements ISubPage {
             courseSelector.setItems(observableCourses);
             courseSelector.getSelectionModel().selectFirst();
         } catch(SQLException e) {
-            e.printStackTrace();
+            UserAlert.showDatabaseError();
         }
 
         dateFromSelector.setValue(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));

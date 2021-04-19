@@ -80,7 +80,7 @@ public class Controller implements ISubPage {
             courseSelector.setItems(observableCourses);
             courseSelector.getSelectionModel().selectFirst();
         } catch(SQLException e) {
-            e.printStackTrace();
+            UserAlert.showDatabaseError();
         }
 
         dateFromSelector.setValue(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
@@ -190,13 +190,13 @@ public class Controller implements ISubPage {
                             try {
                                 attendanceBLL.setAttended(currentAccount,lessonStringCellEditEvent.getRowValue());
                             } catch (SQLException throwables) {
-                                UserAlert.showAlert("Der gik noget galt!","Der opstod desværre en fejl... Prøv igen!", Alert.AlertType.ERROR);
+                                UserAlert.showDatabaseError();
                             }
                         } else {
                             try {
                                 attendanceBLL.removeAttendance(currentAccount, lessonStringCellEditEvent.getRowValue());
                             } catch(SQLException throwables) {
-                                UserAlert.showAlert("Der gik noget galt!","Der opstod desværre en fejl... Prøv igen!", Alert.AlertType.ERROR);
+                                UserAlert.showDatabaseError();
                             }
                         }
                     }

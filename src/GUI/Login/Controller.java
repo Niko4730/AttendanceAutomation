@@ -99,7 +99,7 @@ public class Controller {
                 UserAlert.showAlert("Forkert!","Brugernavn og/eller adgangskode er forkert. Prøv igen!", Alert.AlertType.WARNING);
             }
         } catch(SQLException e) {
-            e.printStackTrace();
+            UserAlert.showDatabaseError();
         }
     }
 }

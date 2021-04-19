@@ -7,6 +7,7 @@ import BLL.AccountBLL;
 import BLL.AttendanceBLL;
 import BLL.SchemaBLL;
 import GUI.Dashboard.Interfaces.ISubPage;
+import UTIL.UserAlert;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -72,7 +73,7 @@ public class Controller implements ISubPage {
             courseSelector.setItems(observableCourses);
             courseSelector.getSelectionModel().selectFirst();
         } catch(SQLException e) {
-            e.printStackTrace();
+            UserAlert.showDatabaseError();
         }
     }
 
@@ -134,7 +135,7 @@ public class Controller implements ISubPage {
 
                 observableAccounts.setAll(attendanceBLL.getAccountsFromCourse(selectedCourse));
             } catch(SQLException e) {
-                e.printStackTrace();
+                UserAlert.showDatabaseError();
             }
         }
     }

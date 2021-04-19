@@ -71,13 +71,13 @@ public class Controller {
             this.attendanceBLL = new AttendanceBLL(loggedInUser);
             this.accountBLL = new AccountBLL();
         } catch (SQLException e) {
-            UserAlert.showAlert("Der opstod en fejl!",e.getMessage(), Alert.AlertType.ERROR);
+            UserAlert.showDatabaseError();
         }
         this.loggedInUser = loggedInUser;
         try {
             schemaBLL = new SchemaBLL(loggedInUser);
         } catch(SQLException e) {
-            e.printStackTrace();
+            UserAlert.showDatabaseError();
         }
         String name = loggedInUser.getFirstName() + " " + loggedInUser.getLastName();
 
@@ -110,7 +110,7 @@ public class Controller {
             controller.setMainController(this);
             controller.load();
         } catch(IOException e) {
-            e.printStackTrace();
+            UserAlert.showDatabaseError();
         }
     }
 
@@ -132,10 +132,10 @@ public class Controller {
                 controller.setMainController(this);
                 controller.load();
             } catch(SQLException e) {
-                e.printStackTrace();
+                UserAlert.showDatabaseError();
             }
         } catch(IOException e) {
-            e.printStackTrace();
+            UserAlert.showDatabaseError();
         }
     }
 
@@ -152,7 +152,7 @@ public class Controller {
             controller.setName(name);
             controller.setController(this);
         } catch (IOException e) {
-            e.printStackTrace();
+            UserAlert.showDatabaseError();
         }
     }
 }
