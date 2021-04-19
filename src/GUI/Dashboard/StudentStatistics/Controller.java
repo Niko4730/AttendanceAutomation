@@ -178,4 +178,4 @@ public class Controller implements ISubPage {
             absenceDaysChart.getData().setAll(ds2);
         }
     }
-}
+    }
